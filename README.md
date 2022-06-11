@@ -1,6 +1,6 @@
 # microsoft-todo-app-clone
 This project clone Microsoft todo application by using react native and aws amplifies. 
 
-##Screen Shots
+## Screen Shots
 
-![Home Screen](./docs/images/home_screen.png "Home screen for Todo application").
+<img src="./docs/images/home_screen.png" width="400">
