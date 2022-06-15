@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { MenuItem } from '../components/MenuItem.component';
 import { useTheme } from 'react-native-paper';
 import MenuGroup from '../components/GroupItem.component';
 import { MenuScreenContainer, TopItemsContainer, BreakLine, BreakSpace } from './menu.styled';
+import GroupActionDialog from '../components/GroupActionDialog.component';
 
 const MenuScreen = () => {
   const theme = useTheme();
+  const groupActionDialogRef = useRef();
 
   const folderList = [
     {
@@ -39,7 +41,15 @@ const MenuScreen = () => {
     { name: 'Guideline' },
     { name: 'Guideline' },
   ];
-  const renderFolderItem = (folder) => <MenuGroup group={folder} />;
+  const renderFolderItem = (folder) => (
+    <MenuGroup
+      group={folder}
+      optionPress={() => {
+        groupActionDialogRef.current?.present();
+      }}
+    />
+  );
+
   return (
     <MenuScreenContainer>
       <TopItemsContainer>
@@ -95,6 +105,7 @@ const MenuScreen = () => {
         nameStyle="grey"
         name="New List"
       />
+      <GroupActionDialog ref={groupActionDialogRef} />
     </MenuScreenContainer>
   );
 };
