@@ -18,11 +18,15 @@ const hint = (theme) => `
 `;
 
 const error = (theme) => `
-    color: ${theme.colors.text.error};
+    color: ${theme.colors.alert};
 `;
 
 const caption = (theme) => `
     font-size: ${theme.fontSizes.caption};
+    font-weight: ${theme.fontWeights.bold};
+`;
+const title = (theme) => `
+    font-size: ${theme.fontSizes.title};
     font-weight: ${theme.fontWeights.bold};
 `;
 
@@ -38,6 +42,7 @@ const variants = {
   caption,
   error,
   hint,
+  title,
 };
 
 const regular = (theme) => `
@@ -59,6 +64,9 @@ const planned = (theme) => `
 const task = (theme) => `
   color: ${theme.colors.task}
 `;
+const alert = (theme) => `
+  color: ${theme.colors.alert}
+`;
 
 const styles = {
   grey,
@@ -67,15 +75,16 @@ const styles = {
   planned,
   task,
   regular,
+  alert,
 };
 
 export const Text = styled.Text`
   ${({ theme }) => defaultTextStyles(theme)}
   ${({ variant, theme }) => variants[variant](theme)}
-  ${({ style, theme }) => styles[style](theme)}
+  ${({ type, theme }) => styles[type](theme)}
 `;
 
 Text.defaultProps = {
   variant: 'body',
-  style: 'regular',
+  type: 'regular',
 };

@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "List Name",
+    "group": 1
+  },
+  {
+    "id": 2,
+    "name": "List Name",
+    "group": 1
+  },
+  {
+    "id": 3,
+    "name": "List Name",
+    "group": 1
+  },
+  {
+    "id": 4,
+    "name": "List Name",
+    "group": 2
+  }
+]

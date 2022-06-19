@@ -21,7 +21,7 @@ export const MenuItem = ({
       </Spacer>
       <CatalogContainer>
         <Spacer position="left" size="large">
-          <Text style={nameStyle ? nameStyle : 'regular'}>{name}</Text>
+          <Text type={nameStyle ? nameStyle : 'regular'}>{name}</Text>
         </Spacer>
       </CatalogContainer>
       {menuOptionPress && (

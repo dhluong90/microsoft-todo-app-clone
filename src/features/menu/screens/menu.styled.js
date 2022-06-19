@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import SafeArea from '../../../components/utils/safe-area-view.component';
-
-export const MenuScreenContainer = styled(SafeArea)`
+import { SafeAreaView } from 'react-native-safe-area-context';
+export const MenuScreenContainer = styled(SafeAreaView)`
   flex: ${1};
 `;
 

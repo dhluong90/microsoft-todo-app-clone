@@ -18,6 +18,7 @@ const DefaultTheme = {
     assigned: '#A6D7D2',
     task: '#7B88D7',
     hand: '#F4D368',
+    alert: '#FF1633',
   },
   fonts: {
     ...PaperDefaultTheme.fonts,

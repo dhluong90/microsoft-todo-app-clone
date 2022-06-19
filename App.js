@@ -9,6 +9,13 @@ import { CustomNavigationBar } from './src/components/navigation/CustomNavigatio
 import { Provider as PaperProvider } from 'react-native-paper';
 import DefaultTheme from './src/insfrastructure/theme/';
 import { ThemeProvider as StyledProvider } from 'styled-components';
+import AppDialogs from './src/insfrastructure/dialogs/AppDialogs.component';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppDialogsContextProvider } from './src/insfrastructure/dialogs/AppDialogs.context';
+import { TaskListsContextProvider } from './src/services/lists/task-lists.context';
+import { Amplify } from 'aws-amplify';
+import awsconfig from './src/aws-exports';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -19,18 +26,28 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
+
+  Amplify.configure(awsconfig);
+
   return (
-    <StyledProvider theme={DefaultTheme}>
-      <PaperProvider theme={DefaultTheme}>
-        <NavigationContainer theme={DefaultTheme}>
-          <Stack.Navigator
-            screenOptions={{ header: (props) => <CustomNavigationBar {...props} /> }}
-          >
-            <Stack.Screen name="Menu" component={MenuScreen} />
-            <Stack.Screen name="Myday" component={MyDayScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
-    </StyledProvider>
+    <SafeAreaProvider>
+      <AppDialogsContextProvider>
+        <StyledProvider theme={DefaultTheme}>
+          <PaperProvider theme={DefaultTheme}>
+            <TaskListsContextProvider>
+              <NavigationContainer theme={DefaultTheme}>
+                <Stack.Navigator
+                  screenOptions={{ header: (props) => <CustomNavigationBar {...props} /> }}
+                >
+                  <Stack.Screen name="Menu" component={MenuScreen} />
+                  <Stack.Screen name="Myday" component={MyDayScreen} />
+                </Stack.Navigator>
+              </NavigationContainer>
+              <AppDialogs />
+            </TaskListsContextProvider>
+          </PaperProvider>
+        </StyledProvider>
+      </AppDialogsContextProvider>
+    </SafeAreaProvider>
   );
 }

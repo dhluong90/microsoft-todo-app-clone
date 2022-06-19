@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -7,17 +6,22 @@ import {
   BottomSheetView,
   BottomSheetBackdrop,
 } from '@gorhom/bottom-sheet';
+import BottomSheetDialogCustomBackground from './BottomSheetDialogCustomBackground.component';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from 'react-native-paper';
 
-const GroupActionDialog = React.forwardRef((props, ref) => {
+const BottomSheetDialog = React.forwardRef((props, ref) => {
   // variables
   const snapPoints = useMemo(() => ['CONTENT_HEIGHT'], []);
+  const { bottom: safeAreaBottom } = useSafeAreaInsets();
+  const theme = useTheme();
 
   const { animatedHandleHeight, animatedSnapPoints, animatedContentHeight, handleContentLayout } =
     useBottomSheetDynamicSnapPoints(snapPoints);
 
   const handleSheetChanges = useCallback((index, number) => {
-    console.log('handleSheetChanges', index);
     ref.current?.expand();
+    props.handlechange && props.handleChange();
   }, []);
 
   const renderBackdrop = useCallback((props) => {
@@ -36,33 +40,24 @@ const GroupActionDialog = React.forwardRef((props, ref) => {
         onChange={handleSheetChanges}
         enablePanDownToClose={true}
         backdropComponent={renderBackdrop}
+        backgroundComponent={BottomSheetDialogCustomBackground}
+        handleIndicatorStyle={{ backgroundColor: theme.colors.icon }}
       >
-        <BottomSheetView onLayout={handleContentLayout}>
-          <Text>Could this sheet modal resize to its content height ?</Text>
-          <View>
-            <Text style={styles.emoji}>😍</Text>
-          </View>
-          <Button title="Yes" />
-          <Button title="Maybe" />
+        <BottomSheetView
+          onLayout={handleContentLayout}
+          style={{
+            paddingBottom: safeAreaBottom | 6,
+            paddingHorizontal: 3,
+          }}
+        >
+          {props.renderTitle()}
+          {props.renderContent()}
         </BottomSheetView>
       </BottomSheetModal>
     </BottomSheetModalProvider>
   );
 });
 
-GroupActionDialog.displayName = 'Group Action Dialog';
+BottomSheetDialog.displayName = 'Bottom Sheet Dialog';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-    backgroundColor: 'black',
-  },
-  contentContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
-});
-
-export default GroupActionDialog;
+export default BottomSheetDialog;

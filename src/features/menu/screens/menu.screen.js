@@ -1,57 +1,45 @@
-import React, { useRef } from 'react';
+import React, { useContext, useCallback, useMemo } from 'react';
 import { MenuItem } from '../components/MenuItem.component';
 import { useTheme } from 'react-native-paper';
 import MenuGroup from '../components/GroupItem.component';
 import { MenuScreenContainer, TopItemsContainer, BreakLine, BreakSpace } from './menu.styled';
-import GroupActionDialog from '../components/GroupActionDialog.component';
+import { AppDialogsContext } from '../../../insfrastructure/dialogs/AppDialogs.context';
+import { TaskListsContext } from '../../../services/lists/task-lists.context';
+import List from '../components/List.component';
 
 const MenuScreen = () => {
   const theme = useTheme();
-  const groupActionDialogRef = useRef();
+  const { showDialog } = useContext(AppDialogsContext);
+  const { taskLists, addTasklist, groups } = useContext(TaskListsContext);
 
-  const folderList = [
-    {
-      name: 'Guideline',
-      lists: [
-        {
-          name: 'list 1',
-        },
-        {
-          name: 'list 1',
-        },
-        {
-          name: 'list 1',
-        },
-        {
-          name: 'list 1',
-        },
-      ],
+  const renderFolderItem = useCallback(
+    (folder) => {
+      const folderTaskLists = taskLists.filter((i) => i.group === folder.id);
+      return (
+        <MenuGroup
+          group={folder}
+          taskLists={folderTaskLists}
+          optionPress={() => {
+            showDialog('actionGroupDialog');
+          }}
+          key={folder.id}
+        />
+      );
     },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-    { name: 'Guideline' },
-  ];
-  const renderFolderItem = (folder) => (
-    <MenuGroup
-      group={folder}
-      optionPress={() => {
-        groupActionDialogRef.current?.present();
-      }}
-    />
+    [taskLists, groups]
   );
 
+  const nonGroupList = useMemo(() => {
+    return taskLists.filter((i) => !i.group || i.group == null);
+  }, [taskLists]);
+
+  const onAddNewList = () => {
+    const taskList = { name: 'Untiled list', group: null };
+    addTasklist(taskList);
+  };
+
   return (
-    <MenuScreenContainer>
+    <MenuScreenContainer edges="bottom">
       <TopItemsContainer>
         <MenuItem
           leftIcon={{ type: 'ionicons', name: 'ios-sunny-outline', color: theme.colors.icon }}
@@ -90,9 +78,15 @@ const MenuScreen = () => {
           leftIcon={{ type: 'ionicons', name: 'hand-left', color: theme.colors.hand }}
           name="Getting Started"
         />
-        {folderList.map((folder) => {
-          return renderFolderItem(folder);
-        })}
+        {groups &&
+          groups.length != 0 &&
+          groups.map((folder) => {
+            return renderFolderItem(folder);
+          })}
+        {nonGroupList &&
+          nonGroupList.map((item, index) => {
+            return <List list={item} key={index} />;
+          })}
       </TopItemsContainer>
 
       <MenuItem
@@ -104,8 +98,8 @@ const MenuScreen = () => {
         rightIcon={{ type: 'foundation', name: 'folder-add', color: theme.colors.icon }}
         nameStyle="grey"
         name="New List"
+        onPress={onAddNewList}
       />
-      <GroupActionDialog ref={groupActionDialogRef} />
     </MenuScreenContainer>
   );
 };
